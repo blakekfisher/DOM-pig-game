@@ -24,21 +24,40 @@ let score1 = document.querySelector("#score-1");
 let current0 = document.querySelector("#current-0");
 let current1 = document.querySelector("#current-1");
 
+window.onload = function() {
+  // hide the dice on refresh
+  dice.style.visibility = "hidden";
+  shuffle();
+  console.log("STARTED!");
+}
+
 // Randomly pick a number between 1 and 6s
 function shuffle() {
   random = Math.floor(Math.random() * 6) + 1;
 };
 
+//the roll button
 btnRoll.addEventListener("click", function() {
+  // show the dice
+  dice.style.visibility = "visible";
   shuffle();
-  current0.textContent = roundScore;
-  dice.src = "dice-" + random + ".png";
+  // update the current score
   roundScore = roundScore + random;
+  //display the current score
+  current0.textContent = roundScore;
+  //change the dice image
+  dice.src = "dice-" + random + ".png";
   console.log(roundScore);
 });
 
+//the hold button
 btnHold.addEventListener("click", function() {
+  // hide the dice
+  dice.style.visibility = "hidden";
+  //add the round score to the score array
   score[0] = roundScore;
+  //display the player's score
   score0.textContent = roundScore;
+  //reset current score to zero
   current0.textContent = 0;
 });
