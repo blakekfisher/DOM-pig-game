@@ -11,18 +11,32 @@ GAME RULES:
 
 //Declare the variables
 let roundScore = 0;
-let score = [0,0];
+//player scores
+let playerScore0 = 0;
+let playerScore1 = 0
+//random
 let random = 0;
+//variable to switch players
+let activePlayer = 0;
+let playing = true;
+//selectors
 let btnNew = document.querySelector(".btn-new");
 let btnRoll = document.querySelector(".btn-roll");
 let btnHold = document.querySelector(".btn-hold");
-let name0 = document.querySelector("#name-0");
-let name1 = document.querySelector("#name-1");
+//dice image
 let dice = document.querySelector(".dice");
+//total score
 let score0 = document.querySelector("#score-0");
 let score1 = document.querySelector("#score-1");
+//current score
 let current0 = document.querySelector("#current-0");
 let current1 = document.querySelector("#current-1");
+//player styles
+let player0 = document.querySelector(".player-0-panel");
+let player1 = document.querySelector(".player-1-panel");
+//player headings
+let name0 = document.querySelector("#name-0");
+let name1 = document.querySelector("#name-1");
 
 window.onload = function() {
   // hide the dice on refresh
@@ -31,33 +45,130 @@ window.onload = function() {
   console.log("STARTED!");
 }
 
-// Randomly pick a number between 1 and 6s
+// Randomly pick a number between 1 and 6
 function shuffle() {
   random = Math.floor(Math.random() * 6) + 1;
+  //change the dice image
+  dice.src = "dice-" + random + ".png";
 };
 
 //the roll button
 btnRoll.addEventListener("click", function() {
+  shuffle();
+
   // show the dice
   dice.style.visibility = "visible";
-  shuffle();
-  // update the current score
-  roundScore = roundScore + random;
-  //display the current score
-  current0.textContent = roundScore;
-  //change the dice image
-  dice.src = "dice-" + random + ".png";
-  console.log(roundScore);
+  //check if the dice / random is 1
+  //check if the game is finished
+  if (random !== 1) {
+    currentPlayer();
+  } else {
+    // reset round score
+    roundScore = 0;
+    current0.textContent = roundScore;
+    current1.textContent = roundScore;
+
+    //change players if roll a 1
+    if (activePlayer === 0) {
+      activePlayer = 1;
+      } else {
+          activePlayer = 0;
+        }
+    };
 });
+
+//the current player function
+function currentPlayer() {
+  if (activePlayer === 0) {
+    // update the current score
+    roundScore = roundScore + random;
+    console.log("Player 1 round score is " + roundScore);
+    current0.textContent = roundScore;
+    gameFinish();
+  } else {
+    roundScore = roundScore + random;
+    current1.textContent = roundScore;
+    console.log("Player 2 round score is " + roundScore);
+  }
+};
+
 
 //the hold button
 btnHold.addEventListener("click", function() {
   // hide the dice
   dice.style.visibility = "hidden";
-  //add the round score to the score array
-  score[0] = roundScore;
-  //display the player's score
-  score0.textContent = roundScore;
+  //if player 1 is playing
+  if (activePlayer === 0) {
+    gameFinish();
+    //change to player 2 for the next round
+    activePlayer = 1;
+    //update the active score
+    playerScore0 = playerScore0 + roundScore;
+    console.log("The current total for player 1 is " + playerScore0);
+    //display the player's score
+    score0.textContent = playerScore0;
+    //reset the current score
+    current0.textContent = 0;
+    //reset the round score
+    roundScore = 0;
+    //change the curent player style
+    player0.classList.remove("active");
+    player1.classList.add("active");
+    } else if (activePlayer === 1) {
+        gameFinish();
+        //change to player 1 for the next round
+        activePlayer = 0;
+        //update the active score
+        playerScore1 = playerScore1 + roundScore;
+        console.log("This is the current total for player 1 is " + playerScore1);
+        //display the player's score
+        score1.textContent = playerScore1;
+        //reset the current score
+        current1.textContent = 0;
+        //reset the round score
+        roundScore = 0;
+        //change the current player style
+        player0.classList.add("active");
+        player1.classList.remove("active");
+    }
+});
+
+//new game event listener
+btnNew.addEventListener("click", function() {
+  console.log("Clicked!");
+  newGame();
+
+});
+
+//the game finish function
+function gameFinish() {
+  if (playerScore0 >= 15) {
+    name0.textContent = "WINNER!"
+  } else if (playerScore1 >= 15) {
+    name1.textContent = "WINNER!"
+  };
+};
+
+//the new game function
+function newGame() {
+  shuffle();
+  // update the current score
+  roundScore = roundScore + random;
+  // //change the dice image
+  // dice.src = "dice-" + random + ".png";
+  //reset the round score and the total scores
+  roundScore = 0;
+  playerScore0 = 0;
+  playerScore1 = 0;
+  console.log(roundScore);
   //reset current score to zero
   current0.textContent = 0;
-});
+  current1.textContent = 0;
+  playerScore0.textContent = 0;
+  playerScore1.textContent = 0;
+  // hide the dice
+  dice.style.visibility = "hidden";
+  //switch the active player to 1
+  player0.classList.add("active");
+  player1.classList.remove("active");
+};
