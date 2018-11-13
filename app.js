@@ -18,6 +18,7 @@ let playerScore1 = 0
 let random = 0;
 //variable to switch players
 let activePlayer = 0;
+let playing = true;
 //selectors
 let btnNew = document.querySelector(".btn-new");
 let btnRoll = document.querySelector(".btn-roll");
@@ -43,7 +44,7 @@ window.onload = function() {
   dice.style.visibility = "hidden";
   shuffle();
   console.log("STARTED!");
-}
+};
 
 // Randomly pick a number between 1 and 6
 function shuffle() {
@@ -54,28 +55,30 @@ function shuffle() {
 
 //the roll button
 btnRoll.addEventListener("click", function() {
-  shuffle();
-  // show the dice
-  dice.style.visibility = "visible";
-  //check if the dice / random is 1
-  //check if the game is finished
-  if (random !== 1) {
-    currentPlayer();
-  } else {
-    // reset round score
-    roundScore = 0;
-    current0.textContent = roundScore;
-    current1.textContent = roundScore;
-    //toggle the active player class
-    player0.classList.toggle("active");
-    player1.classList.toggle("active");
-    //change players if roll a 1
-    if (activePlayer === 0) {
-      activePlayer = 1;
-      } else {
-          activePlayer = 0;
+  if (playing) {
+    shuffle();
+    // show the dice
+    dice.style.visibility = "visible";
+    //check if the dice / random is 1
+    //check if the game is finished
+    if (random !== 1) {
+      currentPlayer();
+    } else {
+      // reset round score
+      roundScore = 0;
+      current0.textContent = roundScore;
+      current1.textContent = roundScore;
+      //toggle the active player class
+      player0.classList.toggle("active");
+      player1.classList.toggle("active");
+      //change players if roll a 1
+      if (activePlayer === 0) {
+        activePlayer = 1;
+        } else {
+            activePlayer = 0;
         }
-    };
+      };
+  };
 });
 
 //the current player function
@@ -142,13 +145,23 @@ btnNew.addEventListener("click", function() {
 function gameFinish() {
   if (playerScore0 >= 100) {
     name0.textContent = "WINNER!"
+    finStyles();
   } else if (playerScore1 >= 100) {
     name1.textContent = "WINNER!"
+    finStyles();
   };
 };
 
+function finStyles() {
+  player0.classList.toggle("active");
+  player1.classList.toggle("active");
+  dice.style.visibility = "hidden";
+  playing = false;
+}
+
 //the new game function
 function newGame() {
+  playing = true;
   shuffle();
   //reset the round score and the total scores
   roundScore = 0;
@@ -164,4 +177,7 @@ function newGame() {
   //switch the active player to 1
   player0.classList.add("active");
   player1.classList.remove("active");
+  //reset name from winner to player
+  name0.textContent = "Player 1";
+  name1.textContent = "Player 1";
 };
